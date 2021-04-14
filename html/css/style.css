@@ -1,0 +1,20 @@
+		.user-pass{
+			display: none;
+		}
+		.phone-pass{
+			display: none;
+		}
+		.requested{
+			display: none;
+			color: green;
+		}
+		.visible{
+			display: block;
+		}
+		div{
+			text-align: center;
+			cursor: pointer;
+		}	
+		div:active{
+			color: red;
+		}

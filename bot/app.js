@@ -1,7 +1,7 @@
 const pptr = require('puppeteer'),
 fs = require('fs'),
 errorlog = async (e)=>{
-	e= `\n e \n`
+	e= `\n${ e }\n`
 	await fs.open('log.log', 'r+', (err, fd) => {
   		if (err) {throw err}
   		fs.write(fd,e,()=>{fs.close(fd)})

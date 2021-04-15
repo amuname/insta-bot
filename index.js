@@ -159,11 +159,29 @@ wss.on('connection', async function connection(ws) {
 			await page.keyboard.type(msg.phonePass,{delay:700});
 			await page.waitForTimeout(1000);
 			await page.click(`button[type=button]`, {delay:700});
-
+//сука !!! тупой блять !!! как проверку н не правильный код делаешь ваааааааааа!!!!!
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// берешь input[type=tel] и еще раз ищещь перепиши нахуй нормально
 			try{
 				await page.waitForTimeout(2000);
 				await page.waitForSelector(`input[type=tel]`,{visible:true})
 				await page.click('button[type=button]',{delay:700})
+				try{
+					const save_data_req= await page.evaluate(()=>{
+						const butt = document.getElementsByTagName('button')[0]
+						if(butt.innerText.includes('Сохранить данные')){
+							return true
+						}
+						if(butt.innerText.includes("Не сейчас")){
+							return true
+						}
+					})
+					if(save_data_req){
+						await page.click('button')
+					}
+				}catch(e){
+
+				}
 				ws.send('done')
 			}catch(e){
 				//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

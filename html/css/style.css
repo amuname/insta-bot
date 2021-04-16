@@ -8,6 +8,9 @@
 			display: none;
 			color: green;
 		}
+		.done{
+			display: none;
+		}
 		.visible{
 			display: block;
 		}

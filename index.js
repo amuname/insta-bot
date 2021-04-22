@@ -97,7 +97,6 @@ wss.on('connection', async function connection(ws) {
   		const msg= JSON.parse(message)
   		console.log('\n else\r\n')
 
-
 	  	if (msg.userLog&&msg.userPassword) {
 
 	  		await console.log('str 69   received: %s user Pass', msg.userLog);
@@ -162,83 +161,23 @@ wss.on('connection', async function connection(ws) {
 			await page.waitForTimeout(1300);
 			await page.keyboard.up('Shift');
 			await page.waitForTimeout(700);
-			await page.evaluate(()=>{
-				const config={
-					childList:true,
-					subtree:true,
-					attributes:true
-				},
-				observer_callback= (muationList)=>{
-					muationList.forEach((mutation)=>{
-						if (mutation.target.innerText.includes('Сохранить данные')) {
-							
-							oserver.disconnect()
-						}
-						if (mutation.target.innerText.includes('')) {
-							//searching for 'incorrect input' highlighted text 
-
-							oserver.disconnect()
-						}
-					})
-				},
-				observer= new MutationObserver(observer_callback);
-
-				oserver.observe(document.body,config)
-
-			});
 			await page.keyboard.type(msg.phonePass,{delay:700});
 			await page.waitForTimeout(1000);
 			await page.click(`button[type=button]`, {delay:700});
-//сука !!! тупой блять !!! как проверку н не правильный код делаешь ваааааааааа!!!!!
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// берешь input[type=tel] и еще раз ищещь перепиши нахуй нормально
-			const bot_finally_login = ()=>{
-
+				//сука !!! тупой блять !!! как проверку н не правильный код делаешь ваааааааааа!!!!!
+				//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				// берешь input[type=tel] и еще раз ищещь перепиши нахуй нормально
+			await page.waitForNavigation({waitUntil: 'networkidle2'})
+			if(page.url().includes('https://www.instagram.com/accounts/onetap/?')) {
 				try{
 					await page.waitForTimeout(3000);
-					// if(button_still_here){
-					// 	await page.waitForTimeout(3000);
-					// 	ws.send('wrong_phone_code')
-					// } else{
-						await page.reload({waitUntil:networkidle2}).then(async()=>{//тайм аут до этого момента слишком рано срабатывает, надо либо увеличить его, либо что лучше 
-							//импользовать MutationObserver
-							const button_still_here= await page.evaluate(()=>{
-							console.log(document.querySelector(`button[type=button]`).innerText.includes('Подтвердить'))
-							return document.querySelector(`button[type=button]`).innerText.includes('Подтвердить')
-								});
-							if(button_still_here){
-								ws.send('wrong_phone_code')
-							} else{
-								callback.start(browserWSEndpoint)
-							}
 
-						})
+						await page.goto('https://www.instagram.com', {waitUntil: 'networkidle2'}).then(
+							async()=>{
+								console.log('norm')
+								ws.send('done')					
+							})
 
-						// await page.waitForSelector(`input[type=tel]`,{visible:true})
-						// await page.click('button[type=button]',{delay:700})
-						// try{
-						// 	const save_data_req= await page.evaluate(()=>{
-						// 		const butt = document.getElementsByTagName('button')[0]
-						// 		if(butt.innerText.includes('Сохранить данные')){
-						// 			return true
-						// 		}
-						// 		if(butt.innerText.includes("Не сейчас")){
-						// 			return true
-						// 		}
-						// 	})
-						// 	if(save_data_req){
-						// 		console.log('norm')
-						// 		await page.click('button')
-						// 		ws.send('done')
-						// 		callback.start(browserWSEndpoint)
-								
-						// 	}
-						// } catch(err){
-						// 	console.warn('>> second try: \n'+ err)
-						// }
-					// }
-					
-					
 				} catch(err){
 					console.warn('>> first try: \n'+ err)
 					//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -247,6 +186,8 @@ wss.on('connection', async function connection(ws) {
 					//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 					//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 				}
+			} else {
+				ws.send('wrong_phone_code')
 			}
 			
 
@@ -257,7 +198,11 @@ wss.on('connection', async function connection(ws) {
 	  		});*/
 
 	  	}
-
+  ws.on('close', async ()=>{
+	  	browser.disconnect()
+	  	callback.start(browserWSEndpoint)
+	})  								
+								
   	}
     // ws.send(`ws from server ${message}`);
   });

